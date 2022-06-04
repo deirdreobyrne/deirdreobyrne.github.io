@@ -24,7 +24,22 @@ D = (7771.37714483372 * T) + 5.19846652984
 M = (628.30195516723 * T) + 6.24006012726
 MP = (8328.69142475915 * T) + 2.35555563685
 ```
-These values will be much larger than _2 &#03c0; _ for modern times but, since most math libraries will accept such large values, we can proceed.
+These values will be much larger than _2pi_ for modern times but, since most math libraries will accept such large values, we can proceed.
 
 Meeus' formula 48.4 calculates the quantity _i_ - the selenocentric elongation of the Earth from the Sun - which is a quantity whose values _decreases_ with the
 passage of time. Instead we are going to calculate a quantity _E_ - the geocentric elongation of the Moon from the Sun - where _E = pi - i_.
+```
+E = D + (0.109764 * sin (MP)) - (0.036652 * sin(M)) + (0.022235 * sin(2*D - MP)) + (0.011484 * sin(2*D)) + (0.003735 * sin(2*MP)) + (0.00192 * sin(D))
+```
+From this, we can calculate the fraction of the moon's diameter which is illuminated
+```
+FRAC = (1 - cos(E)) / 2
+```
+We note that
+```
+if (sin(E) >= 0) {
+   # Moon is waxing
+} else {
+  # Moon is waning
+}
+```
