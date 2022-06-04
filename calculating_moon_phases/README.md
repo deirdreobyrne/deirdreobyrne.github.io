@@ -64,9 +64,10 @@ We note that _sin(E)_ is positive, hence the moon is waxing.
 The Stellarium program gives a phase angle of _125d 25' 52.4" = 125.43122d_ for this instant, and a value of _FRAC_ of _21.0%_.
 Our value of _E_ gives a phase angle of _126.3093d_.
 
+<!-- 
 ### Comparison to simpler formula
 
-I have a simpler formula in my moon phase bangle widget -
+I have a simpler formula in my (current) moon phase bangle widget -
 
 ```
 k = (millis - 947168438000) / 2551442878;
@@ -86,3 +87,4 @@ d = 1741.4691233037928187393266814888 = 1747.7523086109724052162519682554 A bit 
 t = d - 0.06437076 - 0.01860583 = 1.02679322 - 0.06437076 - 0.01860583 = 0.94381663 (54.0767 deg -- 125.9233)
 k = 0.20665
 ```
+-->
