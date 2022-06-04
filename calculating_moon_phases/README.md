@@ -38,8 +38,23 @@ FRAC = (1 - cos(E)) / 2
 We note that
 ```
 if (sin(E) >= 0) {
-   # Moon is waxing
+  # Moon is waxing
 } else {
   # Moon is waning
 }
 ```
+
+## A worked example
+
+Our timestamp is 2022 June 4 09:31:10 UT
+
+The value of millis() is 1654335070000, hence
+```
+T = 0.224227149720
+D = 1747.752213114103
+M = 147.122416697834
+MP = 1869.874294706978
+E =  1747.7522131 - 0.0643708 - 0.0186059 - 0.0220047 + 0.0101724 + 0.0035484 + 0.0016427 = 1747.7522131 - 0.0896179 = 1747.6625952
+FRAC = 0.2039
+```
+We note that `sin(E)` is positive, hence the moon is waxing.
