@@ -59,45 +59,13 @@ FRAC = 0.2039
 ```
 We note that _sin(E)_ is positive, hence the moon is waxing.
 
-<!--
+### Comparison with XEphem
 
-I'm not sure if Stellarium calculates the geocentric phase angle or the topocentric one.
+[XEphem](https://xephem.github.io/XEphem/Site/xephem.html) gives a geocentric elongation of the moon of _53d 47' 11"_ for this time,
+which translates into _53.78639d_.
 
-
-### Comparison to Stellarium
-
-The Stellarium program gives a phase angle of _125d 25' 52.4" = 125.43122d_ for this instant, and a value of _FRAC_ of _21.0%_.
-Our value of _E_ gives a phase angle of _126.3093d_.
--->
-
-<!-- 
-
-The better performance of this formula is probably a coincidence!
-
-
-### Comparison to simpler formula
-
-I have a simpler formula in my (current) moon phase bangle widget -
-
-```
-k = (millis - 947168438000) / 2551442878;
-mp = 3.5179607 + 6.73377583059 * k;
-m =  0.0445652 + 0.50798430438 * k;
-d =  6.28318530718 * k;
-t = d + 0.109764 * Math.sin(mp) - 0.036652 * Math.sin(m);
-k = (1 - Math.cos(t))/2;
-```
-This actually gives a slightly better result!!!
-```
-k = 277.16341921568976626722661827117
-mp = 1869.8742941382957222058568853447 OK
-m = 140.8392319098644910991419028743 = 147.12241721704407757606718964086 OK
-d = 1741.4691233037928187393266814888 = 1747.7523086109724052162519682554 A bit off, but OK
-
-t = d - 0.06437076 - 0.01860583 = 1.02679322 - 0.06437076 - 0.01860583 = 0.94381663 (54.0767 deg -- 125.9233)
-k = 0.20665
-```
--->
+Our result of _1747.6625952 rad_ translates into _53.69072 deg_ - a difference of _0.09567 deg_ - which corresponds to less than 12 minutes
+worth of motion of the moon.
 
 ## Rate of change of the phase
 
