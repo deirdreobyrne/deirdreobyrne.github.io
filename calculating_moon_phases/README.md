@@ -57,4 +57,8 @@ MP = 1869.874294706978
 E =  1747.7522131 - 0.0643708 - 0.0186059 - 0.0220047 + 0.0101724 + 0.0035484 + 0.0016427 = 1747.7522131 - 0.0896179 = 1747.6625952
 FRAC = 0.2039
 ```
-We note that `sin(E)` is positive, hence the moon is waxing.
+We note that _sin(E)_ is positive, hence the moon is waxing.
+
+### Comparison to Stellarium
+
+The Stellarium program gives a phase angle of _125d 25' 52.4" = 125.43122d_ for this instant, and a value of _FRAC_ of _21.0%_. Our value of _E_ gives a phase angle of _126.3093d_.
