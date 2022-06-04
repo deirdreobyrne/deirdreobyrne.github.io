@@ -2,7 +2,7 @@
 
 ## Introduction
 
-There seems to be a proliferation of a poor algorithm for calculating the moon's phase on the Internet. This algorithm, for instance, assumes the moon's phase
+There seems to be a proliferation of poor algorithms for calculating the moon's phase on the Internet. This algorithm, for instance, assumes the moon's phase
 progression is smooth, whereas in fact the progression of the phase is slow near to new and full moon, and quicker nearer to the quarters.
 
 ## A better algorithm
