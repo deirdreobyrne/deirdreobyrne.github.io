@@ -62,10 +62,9 @@ We note that _sin(E)_ is positive, hence the moon is waxing.
 ### Comparison with XEphem
 
 [XEphem](https://xephem.github.io/XEphem/Site/xephem.html) gives a geocentric elongation of the moon of _53d 47' 11"_ for this time,
-which translates into _53.78639d_.
+which translates into _53.78639d_. Our result of _1747.6625952 rad_ translates into _53.69072 deg_ - a difference of _0.09567 deg_.
 
-Our result of _1747.6625952 rad_ translates into _53.69072 deg_ - a difference of _0.09567 deg_ - which corresponds to less than 12 minutes
-worth of motion of the moon.
+Running a long term comparison, we find that between now and 2050, the maximum resulting error in the moon's phase is _0.004_, with most results within _0.002_.
 
 ## Rate of change of the phase
 
