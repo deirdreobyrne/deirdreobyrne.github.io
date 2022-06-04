@@ -98,3 +98,10 @@ t = d - 0.06437076 - 0.01860583 = 1.02679322 - 0.06437076 - 0.01860583 = 0.94381
 k = 0.20665
 ```
 -->
+
+## Rate of change of the phase
+
+It is sensible to cache the calculations for the phase. Hence we need to know how quickly the phase changes, so we can get an idea as to when the cache should
+be considered stale.
+
+Using calculus, we can calculate that the maximum rate of change of the phase is a bit slower than 1 part in 800,000 per second.
