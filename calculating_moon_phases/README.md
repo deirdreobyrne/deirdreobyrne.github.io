@@ -68,7 +68,7 @@ Running a long term comparison, we find that between now and 2050, the maximum r
 
 ## Rate of change of the phase
 
-It is sensible to cache the calculations for the phase. Hence we need to know how quickly the phase changes, so we can get an idea as to when the cache should
+It can be sensible to cache the calculations for the phase. Hence we need to know how quickly the phase changes, so we can get an idea as to when the cache should
 be considered stale.
 
 Using calculus, we can calculate that the maximum rate of change of the phase is a bit slower than 1 part in 800,000 per second.
