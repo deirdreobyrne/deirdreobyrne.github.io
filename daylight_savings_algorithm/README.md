@@ -17,7 +17,7 @@ This algorithm is based on chapter 7 of Jean Meeus’ excellent 1991 book “Ast
 // m - the month (0 .. 11)
 // d - the day of the month (1 .. 31)
 // returns the number of days elapsed since 1970 Jan 1
-int dayNumber(int y, int m, int d) {
+int getDayNumber(int y, int m, int d) {
   int days;
   if (m < 2) {
     y--;
@@ -46,71 +46,78 @@ this part of the formula as `floor(30.6001*(m+2))`, which is safer if your compu
 Most computer languages have an implementation of something like `Date()`, from which the current year can be determined (e.g. by calling `Date().getYear()` or
 equivalent), and the current number of milliseconds since 1970 Jan 1 (e.g. by calling `Date().getMillis()` or equivalent).
 
+First we define a data structure
+```
+typedef struct {
+  int daysPrior; // if the DST rule is "Fri before last Sun", then this is 2, otherwise it is zero
+  int dayNumber; // 0 for 1st, 1 for 2nd, and 4 for last
+  int dayOfWeek; // 0 for Sunday
+  int month; // 0 for January
+  float time; // the time of day (in hours) that the changeover happens
+  bool isStart; // true if this represents the start (as opposed to end) of DST
+} DSTRule;
+```
+
+
 ```
 // year - the year for which we are determining the start/end of DST
-// dstDaysPrior - if the DST rule is "Fri before last Sun", then this is 2, otherwise it is zero
-// dstDayNumber - 0 for 1st, 1 for 2nd, and 4 for last
-// dstDayOfWeek - 0 for Sunday
-// dstMonth - 0 for January
-// dstTime - the time of day (in hours) that the changeover happens
+// rule - the DSTRule for the change we are considering
 // dstTimezone - the "normal" timezone of the user in hours (positive east)
 // dstOffset - the number of hours the DST changeover involves
-// isStart - a boolean indicating whether we are looking at the start (as opposed to end) of DST
 // Returns the number of milliseconds since 1970 that the change happens
-int getDstChangeTime(year, dstDaysPrior, dstDayNumber, dstDayOfWeek, dstMonth, dstTime, dstTimezone, dstOffset, isStart) {
+float getDstChangeTime(int year, DSTRule rule, float dstTimezone, float dstOffset) {
   int result;
-  if (dstDayNumber == 4) { // last X of this month? Work backwards from 1st of next month.
-    if (++dstMonth > 11) {
+  if (rule.dayNumber == 4) { // last X of this month? Work backwards from 1st of next month.
+    if (++rule.month > 11) {
       year++;
-      dstMonth-=12;
+      rule.month-=12;
     }
   }
-  result = dayNumber(year, dstMonth, 1); // 1970 Jan 1 was Thursday, so (result % 7) is 0 for Thursday, hence ((result + 4) % 7) is 0 for Sunday
-  if (dstDayNumber == 4) {
-    result -= 7 - (7 - ((result + 4) % 7) + dstDayOfWeek) % 7;
+  result = getDayNumber(year, rule.month, 1);
+  // 1970 Jan 1 was Thursday, so (result % 7) is 0 for Thursday, hence ((result + 4) % 7) is 0 for Sunday
+  if (rule.dayNumber == 4) {
+    result -= 7 - (7 - ((result + 4) % 7) + rule.dayOfWeek) % 7;
   } else {
-    result += 7 * dstDayNumber + (14 + dstDayOfWeek - ((result + 4) % 7)) % 7;
+    result += 7 * rule.dayNumber + (14 + rule.dayOfWeek - ((result + 4) % 7)) % 7;
   }
-  result -= dstDaysPrior;
-  result = (result * 86400) + (dstTime - dstTimezone - (isStart ? 0 : dstOffset)) * 3600;
-  return result * 1000;
+  result -= rule.daysPrior;
+  return 1000 * ((result * 86400) + (rule.time - dstTimezone - (rule.isStart ? 0 : dstOffset)) * 3600);
 }
 ```
 
-
-
-
-
+## Step 3 - algorithm to actually determine which changeover is next
 
 ```
-int getNextDSTChange(date, settings) {
-  if (settings.has_dst) {
-    var start = dstChangeTime(now.getFullYear(), settings.tz, settings.dst_start);
-    var end = dstChangeTime(now.getFullYear(), settings.tz + settings.dst_size, settings.dst_end);
-    if (start <= now.getTime()) {
-      if (end <= now.getTime()) {
-        // Both changes have happened for this year
-        if (start < end) {
-          // The start of DST is earlier than the end, so next change is a start of DST
-          next_dst_change = { millis: dstChangeTime(now.getFullYear()+1, settings.tz, settings.dst_start), offset: settings.tz + settings.dst_size, is_start: true };
-          setEffectiveTimezone(settings.tz);
-        } else {
-          // The end of DST is earlier than the start, so the next change is an end of DST
-          next_dst_change = { millis: dstChangeTime(now.getFullYear()+1, settings.tz + settings.dst_size, settings.dst_end), offset: settings.tz, is_start: false };
-          setEffectiveTimezone(settings.tz + settings.dst_size);
-        }
+typedef struct {
+  float changeoverTime; // GMT millis since 1970 that the change happens
+  DSTRule change; // The change that is due to happen
+} DSTChange;
+
+DSTChange getNextDSTChange(Date date, DSTRule dstStart, DSTRule dstEnd, float dstTimezone, float dstOffset) {
+  float start = getDstChangeTime(date.getYear(), dstStart, dstTimezone, dstOffset);
+  float end = getDstChangeTime(date.getYear(), dstEnd, dstTimezone, dstOffset);
+  DSTChange result;
+  if (start <= date.getTime()) {
+    if (end <= date.getTime()) {
+      // Both changes have happened for this year
+      if (start < end) {
+        // The start of DST is earlier than the end, so next change is a start of DST
+        result.changeoverTime = getDstChangeTime(date.getYear()+1, dstStart, dstTimezone, dstOffset);
+        result.change = dstStart;
       } else {
-        next_dst_change = { millis: end, offset: settings.tz, is_start: false };
-        setEffectiveTimezone(settings.tz + settings.dst_size);
+        // The end of DST is earlier than the start, so the next change is an end of DST
+        result.changeoverTime = getDstChangeTime(date.getYear()+1, dstEnd, dstTimezone, dstOffset);
+        result.change = dstEnd;
       }
     } else {
-      next_dst_change = { millis: start, offset: settings.tz + settings.dst_size, is_start: true };
-      setEffectiveTimezone(settings.tz);
+      result.changeoverTime = end;
+      result.change = dstEnd;
     }
-    next_dst_change.show_icon = settings.show_icon;
   } else {
-    next_dst_change = undefined;
+    result.changeoverTime = start;
+    result.change = dstStart;
   }
+  return result;
 }
 ```
 
