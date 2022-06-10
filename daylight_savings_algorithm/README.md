@@ -64,7 +64,7 @@ typedef struct {
 // rule - the DSTRule for the change we are considering
 // dstTimezone - the "normal" timezone of the user in hours (positive east)
 // dstOffset - the number of hours the DST changeover involves
-// Returns the number of milliseconds since 1970 that the change happens
+// Returns the number of GMT milliseconds since 1970 that the change happens
 float getDstChangeTime(int year, DSTRule rule, float dstTimezone, float dstOffset) {
   int result;
   if (rule.dayNumber == 4) { // last X of this month? Work backwards from 1st of next month.
