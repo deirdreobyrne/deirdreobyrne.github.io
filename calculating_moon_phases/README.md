@@ -65,6 +65,7 @@ We note that _sin(E)_ is positive, hence the moon is waxing.
 which translates into _53.78639d_. Our result of _1747.6625952 rad_ translates into _53.69072 deg_ - a difference of _0.09567 deg_.
 
 Running a long term comparison, we find that between now and 2050, the maximum resulting error in the moon's phase is _0.004_, with most results within _0.002_.
+Better than _0.002_ isn't possible with an algorithm which ignores the moon's ecliptic latitude.
 
 ## Rate of change of the phase
 
@@ -72,3 +73,7 @@ It can be sensible to cache the calculations for the phase. Hence we need to kno
 be considered stale.
 
 Using calculus, we can calculate that the maximum rate of change of the phase is a bit slower than 1 part in 690,000 per second.
+
+## Moon phase drawing algorithm
+
+[Link](https://github.com/rozek/banglejs-2-activities/blob/main/README.md#drawmoonphase) to a javascript moon phase drawing algorithm
