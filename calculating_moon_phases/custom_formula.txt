@@ -72,6 +72,7 @@ fval = 66.01731607737453
 ans = 7.030412076537430e-02
 
 0.0703 radians = 4 degrees :/
+Of course I should have found out the maximum absolute value. But what I should actually do is compare phase calculations.
 
 
 
