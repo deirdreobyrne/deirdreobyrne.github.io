@@ -35,68 +35,79 @@ p1=[0.022235 ];
 #fval3 = 125.6149640393175
 phase2 = phase2 - xmin3*sin(2*D(t)-mp(t));
 
-fnc1 = @(p) sumsq(phase2-p(1)*sin(2*D(t)))
-p1=[0.011484 ];
+## RE-DONE!
+
+fnc1 = @(p) sumsq(phase2-(ifelse(mod(D(t),pi) <= p(1)/2 | mod(D(t),pi) >= pi-p(1)/2, ...
+  p(2)*mod(D(t)+p(1)/2,pi)/p(1), p(2)*(1-mod(D(t)-p(1)/2,pi)/(pi-p(1))))-p(2)/2)-p(3)*sin(2*D(t)))
+p1=[0.22431, 0.03871, 0.011484 ];
 [xmin4,fval4]=fminsearch(fnc1,p1)
+# OLD -
 #xmin4 = 1.508507421875000e-02
 #fval4 = 65.99357998471909
-phase2 = phase2 - xmin4 * sin(2*D(t));
+# NEW -
+#xmin4 = 1.619147787470724e-01   2.541848302958411e-02   6.589447562519009e-03
+#fval4 = 56.68453435575019
+phase2 = phase2 - (ifelse(mod(D(t),pi) <= xmin4(1)/2 | mod(D(t),pi) >= pi-xmin4(1)/2, ...
+  xmin4(2)*mod(D(t)+xmin4(1)/2,pi)/xmin4(1), xmin4(2)*(1-mod(D(t)-xmin4(1)/2,pi)/ ...
+  (pi-xmin4(1))))-xmin4(2)/2) - xmin4(3) * sin(2*D(t));
 
 fnc1 = @(p) sumsq(phase2-p(1)*sin(2*mp(t)))
 p1=[0.003735   ];
 [xmin5,fval5]=fminsearch(fnc1,p1)
 #xmin5 = 3.704482421875000e-03
-#fval5 = 62.37158817387459
+#fval5 = 53.06244608031772
 phase2 = phase2 - xmin5 * sin(2*mp(t));
 
-fnc1 = @(p) sumsq(phase2-p(1)*sin(4*D(t)))
-p1=[0.003  ];
-[xmin6,fval6]=fminsearch(fnc1,p1)
-#xmin6 = 3.244140625000000e-03
-#fval6 = 59.62133016885514
-phase2 = phase2 - xmin6 * sin(4*D(t));
-
-fnc1 = @(p) sumsq(phase2-p(1)*sin(8*D(t)))
-p1=[0.002  ];
-[xmin7,fval7]=fminsearch(fnc1,p1)
-#xmin7 = 2.518798828125000e-03
-#fval7 = 57.97312530292286
-phase2 = phase2 - xmin7 * sin(8*D(t));
-
-fnc1 = @(p) sumsq(phase2-p(1)*sin(6*D(t)))
-p1=[0.001  ];
-[xmin8,fval8]=fminsearch(fnc1,p1)
-#xmin8 = 2.831054687500000e-03
-#fval8 = 55.84992477494759
-phase2 = phase2 - xmin8 * sin(6*D(t));
-
-fnc1 = @(p) sumsq(phase2-p(1)*sin(12*D(t)))
-p1=[0.001  ];
-[xmin9,fval9]=fminsearch(fnc1,p1)
-#xmin9 = 1.823974609375000e-03
-#fval9 = 54.97223532979434
-phase2 = phase2 - xmin9 * sin(12*D(t));
+#fnc1 = @(p) sumsq(phase2-p(1)*sin(4*D(t)))
+#p1=[0.003  ];
+#[xmin6,fval6]=fminsearch(fnc1,p1)
+##xmin6 = 3.244140625000000e-03
+##fval6 = 59.62133016885514
+#phase2 = phase2 - xmin6 * sin(4*D(t));
+#
+#fnc1 = @(p) sumsq(phase2-p(1)*sin(8*D(t)))
+#p1=[0.002  ];
+#[xmin7,fval7]=fminsearch(fnc1,p1)
+##xmin7 = 2.518798828125000e-03
+##fval7 = 57.97312530292286
+#phase2 = phase2 - xmin7 * sin(8*D(t));
+#
+#fnc1 = @(p) sumsq(phase2-p(1)*sin(6*D(t)))
+#p1=[0.001  ];
+#[xmin8,fval8]=fminsearch(fnc1,p1)
+##xmin8 = 2.831054687500000e-03
+##fval8 = 55.84992477494759
+#phase2 = phase2 - xmin8 * sin(6*D(t));
+#
+#fnc1 = @(p) sumsq(phase2-p(1)*sin(12*D(t)))
+#p1=[0.001  ];
+#[xmin9,fval9]=fminsearch(fnc1,p1)
+##xmin9 = 1.823974609375000e-03
+##fval9 = 54.97223532979434
+#phase2 = phase2 - xmin9 * sin(12*D(t));
 
 fnc1 = @(p) sumsq(phase2-p(1)*sin(D(t)))
 p1=[0.001  ];
 [xmin10,fval10]=fminsearch(fnc1,p1)
 #xmin10 = 1.946044921875000e-03
-#fval10 = 53.96817886216041
+#fval10 = 52.05837548024523
 phase2 = phase2 - xmin10 * sin(D(t));
 
 fnc1 = @(p) sumsq(phase2-p(1)*sin(2*(F(t)-D(t))))
 p1=[0.001  ];
 [xmin11,fval11]=fminsearch(fnc1,p1)
 #xmin11 = 1.732421875000000e-03
-#fval11 = 53.17642519980546
+#fval11 = 51.26660815571190
 phase2 = phase2 - xmin11 * sin(2*(F(t)-D(t)));
 
-fnc1 = @(p) sumsq(phase2-p(1)*sin(10*D(t)))
-p1=[0.001  ];
-[xmin12,fval12]=fminsearch(fnc1,p1)
-#xmin12 = 2.159667968750000e-03
-#fval12 = 51.94662778380171
-phase2 = phase2 - xmin12 * sin(10*D(t));
+#fnc1 = @(p) sumsq(phase2-p(1)*sin(10*D(t)))
+#p1=[0.001  ];
+#[xmin12,fval12]=fminsearch(fnc1,p1)
+##xmin12 = 2.159667968750000e-03
+##fval12 = 51.94662778380171
+#phase2 = phase2 - xmin12 * sin(10*D(t));
+
+## RE-DO FROM HERE!!!
 
 pfft=fft(phase2);
 [maxv,maxi]=max(abs(pfft))
@@ -113,9 +124,11 @@ phase2 = phase2 - xmin13 * sin(2*F(t));
 pfft=fft(phase2);
 
 actualphase = (1-cos(phase))/2;
-myphase=(1-cos(polyval(poly4,t) + xmin1 * sin(mp(t)) + xmin2 * sin(M(t)) + xmin3*sin(2*D(t)-mp(t)) + xmin4 * sin(2*D(t)) ...
-  + xmin5 * sin(2*mp(t)) + xmin6 * sin(4*D(t))+ xmin7 * sin(8*D(t))+ xmin8 * sin(6*D(t)) + xmin9*sin(12*D(t)) ...
-  + xmin10 * sin(D(t)) + xmin11*sin(2*(F(t)-D(t))) + xmin12*sin(10*D(t)) + xmin13*sin(2*F(t))))/2;
+myphase=(1-cos(polyval(poly4,t) + xmin1 * sin(mp(t)) + xmin2 * sin(M(t)) + xmin3*sin(2*D(t)-mp(t)) + xmin4(3) * sin(2*D(t)) ...
+  + (ifelse(mod(D(t),pi) <= xmin4(1)/2 | mod(D(t),pi) >= pi-xmin4(1)/2,xmin4(2)*mod(D(t)+xmin4(1)/2,pi)/xmin4(1), ...
+    xmin4(2)*(1-mod(D(t)-xmin4(1)/2,pi)/(pi-xmin4(1))))-xmin4(2)/2)
+  + xmin5 * sin(2*mp(t))  ...
+  + xmin10 * sin(D(t)) + xmin11*sin(2*(F(t)-D(t))) + xmin13*sin(2*F(t))))/2;
 
 
 max(abs(actualphase-myphase))
