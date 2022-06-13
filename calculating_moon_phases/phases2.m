@@ -107,18 +107,23 @@ phase2 = phase2 - xmin11 * sin(2*(F(t)-D(t)));
 ##fval12 = 51.94662778380171
 #phase2 = phase2 - xmin12 * sin(10*D(t));
 
-## RE-DO FROM HERE!!!
-
 pfft=fft(phase2);
 [maxv,maxi]=max(abs(pfft))
 freq(maxi)*360*36525
-# SKIPPING FOR NOW (approx 1705224.062393307 deg/Jcy -- maxi=8500)
+# Going with 2F-6D
+
+fnc1 = @(p) sumsq(phase2-p(1)*sin(2*(F(t)-3*D(t))))
+p1=[0.001  ];
+[xmin12,fval12]=fminsearch(fnc1,p1)
+#xmin12 = 1.579833984375000e-03
+#fval12 = 50.62356039167265
+phase2 = phase2 - xmin12 * sin(2*(F(t)-3*D(t)));
 
 fnc1 = @(p) sumsq(phase2-p(1)*sin(2*F(t)))
 p1=[0.001  ];
 [xmin13,fval13]=fminsearch(fnc1,p1)
 #xmin13 = -1.716064453125000e-03
-#fval13 = 51.18676351524178
+#fval13 = 49.86356679109232
 phase2 = phase2 - xmin13 * sin(2*F(t));
 
 pfft=fft(phase2);
@@ -127,9 +132,12 @@ actualphase = (1-cos(phase))/2;
 myphase=(1-cos(polyval(poly4,t) + xmin1 * sin(mp(t)) + xmin2 * sin(M(t)) + xmin3*sin(2*D(t)-mp(t)) + xmin4(3) * sin(2*D(t)) ...
   + (ifelse(mod(D(t),pi) <= xmin4(1)/2 | mod(D(t),pi) >= pi-xmin4(1)/2,xmin4(2)*mod(D(t)+xmin4(1)/2,pi)/xmin4(1), ...
     xmin4(2)*(1-mod(D(t)-xmin4(1)/2,pi)/(pi-xmin4(1))))-xmin4(2)/2)
-  + xmin5 * sin(2*mp(t))  ...
-  + xmin10 * sin(D(t)) + xmin11*sin(2*(F(t)-D(t))) + xmin13*sin(2*F(t))))/2;
+  + xmin5 * sin(2*mp(t)) + xmin10 * sin(D(t)) + xmin11*sin(2*(F(t)-D(t))) ...
+  + xmin12 * sin(2*(F(t)-3*D(t))) + xmin13 * sin(2*F(t))   ))/2;
 
+##
+## DO AGAIN - RESULTS NOT AS GOOD?!
+##
 
 max(abs(actualphase-myphase))
 #ans = 3.347400398570399e-03
