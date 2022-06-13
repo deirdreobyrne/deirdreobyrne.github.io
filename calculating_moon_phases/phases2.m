@@ -106,8 +106,8 @@ freq(maxi)*360*36525
 fnc1 = @(p) sumsq(phase2-p(1)*sin(2*F(t)))
 p1=[0.001  ];
 [xmin13,fval13]=fminsearch(fnc1,p1)
-xmin13 = -1.716064453125000e-03
-fval13 = 51.18676351524178
+#xmin13 = -1.716064453125000e-03
+#fval13 = 51.18676351524178
 phase2 = phase2 - xmin13 * sin(2*F(t));
 
 pfft=fft(phase2);

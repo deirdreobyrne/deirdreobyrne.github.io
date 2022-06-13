@@ -1,0 +1,240 @@
+A better go at it gives me coefficients of -
+
+   1.946044921875000e-03
+   1.508507421875000e-02
+                       0
+   3.244140625000000e-03
+                       0
+   2.831054687500000e-03
+                       0
+   2.518798828125000e-03
+                       0
+   2.159667968750000e-03
+                       0
+   1.823974609375000e-03
+                       0
+   1.518798828125000e-03
+                       0
+   1.213623046875000e-03
+                       0
+   9.084472656250000e-04
+                       0
+   6.831054687500000e-04
+                       0
+   4.389648437500000e-04
+                       0
+   2.711181640625000e-04
+                       0
+   1.032714843750001e-04
+
+y = Ds(1)*sin(x)+Ds(2)*sin(2*x)+Ds(4)*sin(4*x)+Ds(6)*sin(6*x)+Ds(8)*sin(8*x)+Ds(10)*sin(10*x)+Ds(12)*sin(12*x)+Ds(14)*sin(14*x)+Ds(16)*sin(16*x)+Ds(18)*sin(18*x)+Ds(20)*sin(20*x)+Ds(22)*sin(22*x)+Ds(24)*sin(24*x)+Ds(26)*sin(26*x);
+
+
+GNU Octave, version 7.1.0
+Copyright (C) 1993-2022 The Octave Project Developers.
+This is free software; see the source code for copying conditions.
+There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  For details, type 'warranty'.
+
+Octave was configured for "x86_64-w64-mingw32".
+
+Additional information about Octave is available at https://www.octave.org.
+
+Please contribute if you find this software useful.
+For more information, visit https://www.octave.org/get-involved.html
+
+Read https://www.octave.org/bugs.html to learn how to submit bug reports.
+For information about changes from previous versions, type 'news'.
+
+>> [a b] = [4 5];
+error: invalid number of output arguments for constant expression
+>> [a,b] = [4,5];
+error: invalid number of output arguments for constant expression
+>> [4,5]
+ans =
+
+   4   5
+
+>> a=[4 5]
+a =
+
+   4   5
+
+>> clear a
+>> clear ans
+>> format long;
+>> phases=csvread("phases.csv");
+>> t = phases(:,1);
+>> phase=phases(:,2);
+>> poly4=polyfit(t,phase,4); ## Or I could use the value of D below?
+warning: matrix singular to machine precision, rcond = 1.72962e-19
+warning: called from
+    polyfit at line 157 column 5
+
+>> poly4
+poly4 =
+
+  -2.522610894287007e-21   2.224416831388318e-16  -5.558948467500520e-12   2.127687346562486e-01   5.198337681802380e+00
+
+>> # -2.522610894287007e-21   2.224416831388318e-16  -5.558948467500520e-12   2.127687346562486e-01   5.198337681802380e+00
+>> phase2 = phase - polyval(poly4,t);
+>> mp = @(T) polyval([-6.797e-8,14.348e-6,89.97e-4,477198.86763133,134.96341138]/180*pi,T/36525)
+mp =
+
+@(T) polyval ([-6.797e-8, 14.348e-6, 89.97e-4, 477198.86763133, 134.96341138] / 180 * pi, T / 36525)
+
+>> D = @(T) polyval([-0.884e-8,1.832e-6,-16.3e-4,445267.11151675,297.8502042]/180*pi,T/36525)
+D =
+
+@(T) polyval ([-0.884e-8, 1.832e-6, -16.3e-4, 445267.11151675, 297.8502042] / 180 * pi, T / 36525)
+
+>> F = @(T) polyval ([0.116e-8,-0.284e-6,-34.029e-4,483202.01752731,93.27209932]/180*pi,T/36525)
+F =
+
+@(T) polyval ([0.116e-8, -0.284e-6, -34.029e-4, 483202.01752731, 93.27209932] / 180 * pi, T / 36525)
+
+>> M = @(T) polyval ([0.041e-6,-1.536e-4,35999.05029094,357.52910918]/180*pi,T/36525)
+M =
+
+@(T) polyval ([0.041e-6, -1.536e-4, 35999.05029094, 357.52910918] / 180 * pi, T / 36525)
+
+>> dt=t(2)-t(1)
+dt = 0.125000000000000
+>> n = rows(t)
+n = 524288
+>> freq=linspace(0,1/dt,n);
+>> for i = 1:18
+fnc = @(p) sumsq(phase2-p(1)*sin(i*D(t)));
+p1 = [0.001];
+[xmin,fmin]=fminsearch(fnc,p1);
+scales(i)=xmin;
+end;
+>> scales
+scales =
+
+ Columns 1 through 5:
+
+   2.068115234375000e-03   1.509912109375000e-02   2.343750000000024e-05   3.227783203124999e-03   8.178710937500241e-06
+
+ Columns 6 through 10:
+
+   2.861572265625000e-03  -7.080078124999756e-06   2.495361328125000e-03  -7.080078124999756e-06   2.159667968750000e-03
+
+ Columns 11 through 15:
+
+  -7.080078124999756e-06   1.823974609375000e-03   2.343750000000024e-05   1.518798828125000e-03   2.343750000000024e-05
+
+ Columns 16 through 18:
+
+   1.213623046875000e-03  -3.759765624999975e-05   9.084472656250000e-04
+
+>> [4,5,6]*[1,2,3]'
+ans = 32
+>> for i = 1:18
+Ds(i)=i*sin(D(t));
+end;
+error: =: nonconformant arguments (op1 is 1x1, op2 is 524288x1)
+>> for i = 1:18
+Ds(i,:)=i*sin(D(t));
+end;
+>> y = Ds*scales;
+error: operator *: nonconformant arguments (op1 is 18x524288, op2 is 1x18)
+>> y = Ds*scales';
+error: operator *: nonconformant arguments (op1 is 18x524288, op2 is 18x1)
+>> y(:) = Ds*scales';
+error: operator *: nonconformant arguments (op1 is 18x524288, op2 is 18x1)
+>> y(:) = Ds*scales;
+error: operator *: nonconformant arguments (op1 is 18x524288, op2 is 1x18)
+>> Ds(1)*scales;
+>> Ds(1)*scales
+ans =
+
+ Columns 1 through 5:
+
+  -2.049387072194007e-03  -1.496238848623664e-02  -2.322525781261088e-05  -3.198553474380471e-03  -8.104647257525826e-06
+
+ Columns 6 through 10:
+
+  -2.835658821058430e-03   7.015963297559222e-06  -2.472764167736389e-03   7.015963297559222e-06  -2.140110735524518e-03
+
+ Columns 11 through 15:
+
+   7.015963297559222e-06  -1.807457303312647e-03  -2.322525781261088e-05  -1.505045092210946e-03  -2.322525781261088e-05
+
+ Columns 16 through 18:
+
+  -1.202632881109245e-03   3.725718440772932e-05  -9.002206700075437e-04
+
+>> clear Ds;
+>> for i = 1:18
+Ds(:,i)=i*sin(D(t));
+end;
+>> Ds(1)*scales
+ans =
+
+ Columns 1 through 5:
+
+  -2.049387072194007e-03  -1.496238848623664e-02  -2.322525781261088e-05  -3.198553474380471e-03  -8.104647257525826e-06
+
+ Columns 6 through 10:
+
+  -2.835658821058430e-03   7.015963297559222e-06  -2.472764167736389e-03   7.015963297559222e-06  -2.140110735524518e-03
+
+ Columns 11 through 15:
+
+   7.015963297559222e-06  -1.807457303312647e-03  -2.322525781261088e-05  -1.505045092210946e-03  -2.322525781261088e-05
+
+ Columns 16 through 18:
+
+  -1.202632881109245e-03   3.725718440772932e-05  -9.002206700075437e-04
+
+>> Ds(1)*scales'
+ans =
+
+  -2.049387072194007e-03
+  -1.496238848623664e-02
+  -2.322525781261088e-05
+  -3.198553474380471e-03
+  -8.104647257525826e-06
+  -2.835658821058430e-03
+   7.015963297559222e-06
+  -2.472764167736389e-03
+   7.015963297559222e-06
+  -2.140110735524518e-03
+   7.015963297559222e-06
+  -1.807457303312647e-03
+  -2.322525781261088e-05
+  -1.505045092210946e-03
+  -2.322525781261088e-05
+  -1.202632881109245e-03
+   3.725718440772932e-05
+  -9.002206700075437e-04
+
+>> for i = 1 :524288
+y(i)=sum(Ds(i)*scales);
+end;
+>> plot(x([1:500]),y([1:500]));
+error: 'x' undefined near line 1, column 6
+>> plot(t([1:500]),y([1:500]));
+>> plot(t([1:5000]),y([1:5000]));
+>> plot(t([1:5000]),y([1:5000]));
+>> fnc = @(p) sumsq(y - p(1)*sin(D(t)));
+>> p1=[-0.003];
+>> [sinmag,fval]=fminsearch(fnc,p1)
+error: out of memory or dimension too large for Octave's index type
+error: called from
+    fminsearch>nmsmax at line 291 column 8
+    fminsearch at line 179 column 25
+>> clear phases
+>> fnc = @(p) sumsq(y' - p(1)*sin(D(t)));
+>> [sinmag,fval]=fminsearch(fnc,p1)
+sinmag = 3.340747070312500e-02
+fval = 3.378445516505726e-05
+>> plot(t([1:5000]),y([1:5000])-sinmag*sin(D(t([1:5000]))));
+
+>>
+
+
+
+
+bar(scales)
