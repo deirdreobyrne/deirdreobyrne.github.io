@@ -1,9 +1,7 @@
 format long;
-phases=csvread("phases.csv");
-t = phases(:,1);
-phase=phases(:,2);
-poly4=polyfit(t,phase,4) ## Or I could use the value of D below?
-phase2 = phase - polyval(poly4,t);
+ang=csvread("i2.csv");
+t = ang(:,1);
+phase=ang(:,2);
 mp = @(T) polyval([-6.797e-8,14.348e-6,89.97e-4,477198.86763133,134.96341138]/180*pi,T/36525)
 D = @(T) polyval([-0.884e-8,1.832e-6,-16.3e-4,445267.11151675,297.8502042]/180*pi,T/36525)
 F = @(T) polyval ([0.116e-8,-0.284e-6,-34.029e-4,483202.01752731,93.27209932]/180*pi,T/36525)
@@ -11,6 +9,11 @@ M = @(T) polyval ([0.041e-6,-1.536e-4,35999.05029094,357.52910918]/180*pi,T/3652
 dt=t(2)-t(1)
 n = rows(t)
 freq=linspace(0,1/dt,n);
+
+
+WHAT?!
+
+phase2=m
 
 fnc1 = @(p) sumsq(phase2-p(1)*sin(mp(t)))
 p1=[0.109764];
