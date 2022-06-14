@@ -115,13 +115,33 @@ dfft = fft(dphase);
 degjcy(index) # ans = 922534.4439209822 <-- D + mp -- makes no difference!
 # plot(degjcy,abs(dfft));
 
-dphase = abs(dphase);
-mean(dphase) # ans = 2.422249336288884e-03
-median(dphase) # ans = 2.351272490478062e-03
-sqrt(meansq(dphase)) # ans = 2.845820708813536e-03
-std(dphase) # ans = 1.493789782945632e-03
-quantile(dphase)'
-quantile(dphase,[0:0.1:1])'
+fitfunc = @(p) sumsq((1-cos(myphaseangle+p(1)*sin(2*(D(t)-mp(t)))))/2 - phase);
+testp=[1.335693359375000e-03]; # 1.366210937500000e-03];
+[arg(8),fval]=fminsearch(fitfunc,testp) # fval = 4.186188553655517
+myphaseangle = myphaseangle + arg(8)*sin(2*(D(t)-mp(t)));
+
+# 2F  fval = 4.155598189914369
+# 4F worse!
+# 2D - mp - M  fval = 4.177339156743044
+# 2D + mp worse!
+# 3D no change
+# D + mp almost no change
+# F + mp almost no change
+# 3D-2F slightly worse
+fitfunc = @(p) sumsq((1-cos(myphaseangle+p(1)*sin(2*F(t))))/2 - phase);
+testp=[-9.53125e-4];
+[arg(9),fval]=fminsearch(fitfunc,testp) # fval = 4.155598189914369
+
+
+
+
+#dphase = abs(dphase);
+#mean(dphase) # ans = 2.422249336288884e-03
+#median(dphase) # ans = 2.351272490478062e-03
+#sqrt(meansq(dphase)) # ans = 2.845820708813536e-03
+#std(dphase) # ans = 1.493789782945632e-03
+#quantile(dphase)'
+#quantile(dphase,[0:0.1:1])'
 
 
 # Quantiles
