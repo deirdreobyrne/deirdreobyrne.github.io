@@ -1,5 +1,7 @@
 # Calculating moon phases
 
+# DEPRECATED - there is a better [Lunar Phase algorithm](https://github.com/deirdreobyrne/LunarPhase/)
+
 ## Introduction
 
 There seems to be a proliferation of poor algorithms for calculating the moon's phase on the Internet. Many algorithms, for instance, assumes the moon's phase
